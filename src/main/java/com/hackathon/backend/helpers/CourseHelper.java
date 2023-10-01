@@ -7,7 +7,6 @@ import com.google.gson.JsonObject;
 import com.hackathon.backend.objects.Course;
 
 import java.io.BufferedReader;
-import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.URL;
@@ -48,25 +47,45 @@ public class CourseHelper {
                     final JsonObject secApiDocument = ApiHelper.getSecApiDocument(element.getAsJsonObject().get("leadingInstitutionName").getAsString().trim(),
                             element.getAsJsonObject().get("courseName").getAsString());
 
-                    if (secApiDocument.asMap().containsKey("result")) continue;
+                    Course course;
 
-                    final Course course = new Course(
-                            (element.getAsJsonObject().get("coLeadingInstitutions").getAsJsonArray().isEmpty() ? "Brak" : element.getAsJsonObject().get("coLeadingInstitutions").getAsJsonArray().get(0).getAsString()),
-                            element.getAsJsonObject().get("leadingInstitutionName").getAsString(),
-                            element.getAsJsonObject().get("courseName").getAsString(),
-                            fees,
-                            json.get(i).getAsJsonObject().get("levelCode").getAsString(),
-                            formCode,
-                            address,
-                            secApiDocument.get("courseDescription").getAsString(),
-                            secApiDocument.get("www").getAsString(),
-                            secApiDocument.get("recruitmentPageUrl").getAsString(),
-                            secApiDocument.get("requiredSubjects").getAsJsonArray().asList().stream().map(JsonElement::getAsString).toList(),
-                            secApiDocument.get("requiredSubjectsToSelect").getAsJsonArray().asList().stream().map(JsonElement::getAsString).toList(),
-                            secApiDocument.get("iconId").getAsString(),
-                            secApiDocument.get("phone").getAsString(),
-                            secApiDocument.get("email").getAsString()
-                    );
+                    if (secApiDocument.asMap().containsKey("result")) {
+                        course = new Course(
+                                (element.getAsJsonObject().get("coLeadingInstitutions").getAsJsonArray().isEmpty() ? "Brak" : element.getAsJsonObject().get("coLeadingInstitutions").getAsJsonArray().get(0).getAsString()),
+                                element.getAsJsonObject().get("leadingInstitutionName").getAsString(),
+                                element.getAsJsonObject().get("courseName").getAsString(),
+                                fees,
+                                json.get(i).getAsJsonObject().get("levelCode").getAsString(),
+                                formCode,
+                                address,
+                                "Brak Danych",
+                                "Brak Danych",
+                                "Brak Danych",
+                                new ArrayList<>(),
+                                new ArrayList<>(),
+                                "Brak Danych",
+                                "Brak Danych",
+                                "Brak Danych"
+                        );
+                    } else {
+                        course = new Course(
+                                (element.getAsJsonObject().get("coLeadingInstitutions").getAsJsonArray().isEmpty() ? "Brak" : element.getAsJsonObject().get("coLeadingInstitutions").getAsJsonArray().get(0).getAsString()),
+                                element.getAsJsonObject().get("leadingInstitutionName").getAsString(),
+                                element.getAsJsonObject().get("courseName").getAsString(),
+                                fees,
+                                json.get(i).getAsJsonObject().get("levelCode").getAsString(),
+                                formCode,
+                                address,
+                                secApiDocument.get("courseDescription").getAsString(),
+                                secApiDocument.get("www").getAsString(),
+                                secApiDocument.get("recruitmentPageUrl").getAsString(),
+                                secApiDocument.get("requiredSubjects").getAsJsonArray().asList().stream().map(JsonElement::getAsString).toList(),
+                                secApiDocument.get("requiredSubjectsToSelect").getAsJsonArray().asList().stream().map(JsonElement::getAsString).toList(),
+                                secApiDocument.get("iconId").getAsString(),
+                                secApiDocument.get("phone").getAsString(),
+                                secApiDocument.get("email").getAsString()
+                        );
+                    }
 
                     boolean isSame = false;
                     for (final Course course1 : courses) {
@@ -88,9 +107,22 @@ public class CourseHelper {
                 return jsonCourses.toString();
             }
         } catch (Exception var6) {
-            return "{" +
-                    "\"result\": \"File Not Found\"" +
-                    "}";
+            final JsonObject toReturn = new JsonObject();
+            toReturn.add("Course-0", new Gson().toJsonTree(new Course("Brak Danych",
+                    "Brak Danych",
+                    category,
+                    0, level,
+                    form,
+                    voievodeship,
+                    "Brak Danych",
+                    "Brak Danych",
+                    "Brak Danych",
+                    new ArrayList<>(),
+                    new ArrayList<>(),
+                    "Brak Danych",
+                    "Brak Danych",
+                    "Brak Danych")));
+            return toReturn.toString();
         }
     }
 
@@ -121,23 +153,44 @@ public class CourseHelper {
                     final JsonObject secApiDocument = ApiHelper.getSecApiDocument(element.getAsJsonObject().get("leadingInstitutionName").getAsString().trim(),
                             element.getAsJsonObject().get("courseName").getAsString());
 
-                    final Course course = new Course(
-                            (element.getAsJsonObject().get("coLeadingInstitutions").getAsJsonArray().isEmpty() ? "Brak" : element.getAsJsonObject().get("coLeadingInstitutions").getAsJsonArray().get(0).getAsString()),
-                            element.getAsJsonObject().get("leadingInstitutionName").getAsString(),
-                            element.getAsJsonObject().get("courseName").getAsString(),
-                            fees,
-                            json.get(i).getAsJsonObject().get("levelCode").getAsString(),
-                            formCode,
-                            address,
-                            secApiDocument.get("courseDescription").getAsString(),
-                            secApiDocument.get("www").getAsString(),
-                            secApiDocument.get("recruitmentPageUrl").getAsString(),
-                            secApiDocument.get("requiredSubjects").getAsJsonArray().asList().stream().map(JsonElement::getAsString).toList(),
-                            secApiDocument.get("requiredSubjectsToSelect").getAsJsonArray().asList().stream().map(JsonElement::getAsString).toList(),
-                            secApiDocument.get("iconId").getAsString(),
-                            secApiDocument.get("phone").getAsString(),
-                            secApiDocument.get("email").getAsString()
-                    );
+                    Course course;
+                    if (secApiDocument.asMap().containsKey("result")) {
+                        course = new Course(
+                                (element.getAsJsonObject().get("coLeadingInstitutions").getAsJsonArray().isEmpty() ? "Brak" : element.getAsJsonObject().get("coLeadingInstitutions").getAsJsonArray().get(0).getAsString()),
+                                element.getAsJsonObject().get("leadingInstitutionName").getAsString(),
+                                element.getAsJsonObject().get("courseName").getAsString(),
+                                fees,
+                                json.get(i).getAsJsonObject().get("levelCode").getAsString(),
+                                formCode,
+                                address,
+                                "Brak Danych",
+                                "Brak Danych",
+                                "Brak Danych",
+                                new ArrayList<>(),
+                                new ArrayList<>(),
+                                "Brak Danych",
+                                "Brak Danych",
+                                "Brak Danych"
+                        );
+                    } else {
+                        course = new Course(
+                                (element.getAsJsonObject().get("coLeadingInstitutions").getAsJsonArray().isEmpty() ? "Brak" : element.getAsJsonObject().get("coLeadingInstitutions").getAsJsonArray().get(0).getAsString()),
+                                element.getAsJsonObject().get("leadingInstitutionName").getAsString(),
+                                element.getAsJsonObject().get("courseName").getAsString(),
+                                fees,
+                                json.get(i).getAsJsonObject().get("levelCode").getAsString(),
+                                formCode,
+                                address,
+                                secApiDocument.get("courseDescription").getAsString(),
+                                secApiDocument.get("www").getAsString(),
+                                secApiDocument.get("recruitmentPageUrl").getAsString(),
+                                secApiDocument.get("requiredSubjects").getAsJsonArray().asList().stream().map(JsonElement::getAsString).toList(),
+                                secApiDocument.get("requiredSubjectsToSelect").getAsJsonArray().asList().stream().map(JsonElement::getAsString).toList(),
+                                secApiDocument.get("iconId").getAsString(),
+                                secApiDocument.get("phone").getAsString(),
+                                secApiDocument.get("email").getAsString()
+                        );
+                    }
 
                     boolean isSame = false;
                     for (final Course course1 : courses) {
@@ -159,7 +212,22 @@ public class CourseHelper {
                 return jsonCourses.toString();
             }
         } catch (Exception var6) {
-            return "error";
+            final JsonObject toReturn = new JsonObject();
+            toReturn.add("Course-0", new Gson().toJsonTree(new Course("Brak Danych",
+                    "Brak Danych",
+                    "Brak Danych",
+                    0, level,
+                    form,
+                    voievodeship,
+                    "Brak Danych",
+                    "Brak Danych",
+                    "Brak Danych",
+                    new ArrayList<>(),
+                    new ArrayList<>(),
+                    "Brak Danych",
+                    "Brak Danych",
+                    "Brak Danych")));
+            return toReturn.toString();
         }
     }
 }
